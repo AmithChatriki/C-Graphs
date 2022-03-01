@@ -1,0 +1,86 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#define MAXVERTICES 50
+
+short int visited[MAXVERTICES]={0};
+int count=0;
+
+void DFS(int **a,int v,int n)
+{
+   int i;
+   visited[v]=1;
+   for(i=1;i<=n;i++)
+   {
+      if(a[v][i] && !visited[i])
+      {
+         printf("%d->%d\n",v,i);
+         count++;
+         DFS(a,i,n);
+      }
+   }
+}
+
+int q[MAXVERTICES]={0},f=0,r=-1;;
+
+void BFS(int **a,int v,int n)
+{
+   int i;
+   for(i=1;i<=n;i++)
+      if(a[v][i] && !visited[i])
+          q[++r]=i;
+   if(f<=r)
+   {
+      visited[q[f]]=1;
+      BFS(a,q[f++],n);
+   }
+}
+
+int main()
+{
+   int v,n,i,j;
+   FILE *fp;
+   fp = fopen("DATASET","r");
+   
+   fscanf(fp,"%d",&n);
+   
+   int **a;
+   a = (int**)malloc(sizeof(int*)*n);
+   for(i=1;i<=n;i++)
+      a[i]=(int*)malloc(sizeof(int)*n);
+   
+   for(i=1;i<=n;i++)
+     for(j=1;j<=n;j++)
+        fscanf(fp,"%d",&a[i][j]);
+   
+   printf("BREADTH FIRST SEARCH\n");
+   BFS(a,1,n);
+   for(i=1;i<=n;i++)
+      if(visited[i])
+        printf("%d ",i);
+   printf("\n");
+   
+   memset(visited,0,sizeof(visited));
+   
+   printf("DEPTH FIRST SEARCH\n");
+   DFS(a,1,n);
+   if(count==n-1)
+      printf("Graph is connected\n");
+   else
+      printf("Graph is not connected\n");
+
+   return 0;
+}
+
+/*
+DATASET
+8
+0 1 1 0 0 0 0 0
+1 0 0 1 1 0 0 0
+1 0 0 0 0 1 1 0
+0 1 0 0 0 0 0 1
+0 1 0 0 0 0 0 1
+0 0 1 0 0 0 0 1
+0 0 1 0 0 0 0 1
+0 0 0 1 1 1 1 0
+*/
